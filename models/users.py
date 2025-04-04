@@ -10,7 +10,6 @@ class Login(BaseModel):
     username: str
     password: str
 class Register(BaseModel):
-    id: str
     username: str
     password: str
     email: str

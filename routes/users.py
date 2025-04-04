@@ -16,7 +16,6 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 @router.post('/signup')
 async def signup(request: Register, db: Session = Depends(get_db)):
     try:
-        # Check if the username already exists
         existing_user = UserRepo.get_by_username(db, User, request.username)
         if existing_user:
             return ResponseSchema(
@@ -25,7 +24,6 @@ async def signup(request: Register, db: Session = Depends(get_db)):
                 message="Username already exists"
             ).dict(exclude_none=True)
         
-        # Hash the plain text password before saving
         hashed_password = pwd_context.hash(request.password)
         _user = User(
             username=request.username,
@@ -63,7 +61,6 @@ async def login(request: Login, db: Session = Depends(get_db)):
                 status="error",
                 message="invalid credentials"
             ).dict(exclude_none=True)
-        # Verify the plain text password against the stored hash
         if not pwd_context.verify(request.password, _user.password):
             return ResponseSchema(
                 code="401",
